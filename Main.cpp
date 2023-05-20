@@ -10,7 +10,7 @@
 
 int main(int argc, const char **argv)
 {
-    if (ac != 2)
+    if (argc != 2)
         return 84;
     PONG::Core game((std::string)argv[1]);
     game.run();

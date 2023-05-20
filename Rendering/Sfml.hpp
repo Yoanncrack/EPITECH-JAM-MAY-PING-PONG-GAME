@@ -17,20 +17,20 @@ namespace PONG {
                 m_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 600), "2D PING PONG");
                 m_windowOpened = true;
             }
-            bool windowOpened() const {
+            bool windowOpened()  {
                 return m_windowOpened;
             }
             //Bah vu que la librairie sfml est une lib multimédia, \
             on va afficher des carrés de taille 20*20 pour imiter des pixels 
-            void setPixels(std::unordered_map<Color, Pos> image) {
+            void SetPixels(const std::unordered_map<Pos, Color, PosHash> &image) {
                 m_pixels.clear();
                 for (const auto &s_pixel : image) {
                     sf::RectangleShape pixel;
                     pixel.setSize({20.0f, 20.0f});
-                    sf::Color converted = sf::Color(s_pixel.first.m_r, s_pixel.first.m_g, s_pixel.first.m_b, s_pixel.first.m_a);
+                    sf::Color converted = sf::Color(s_pixel.second.m_r, s_pixel.second.m_g, s_pixel.second.m_b, s_pixel.second.m_a);
                     pixel.setFillColor(converted);
                     pixel.setOutlineColor(converted);
-                    pixel.setPosition({s_pixel.second.m_x, s_pixel.second.m_y});
+                    pixel.setPosition({s_pixel.first.m_x, s_pixel.first.m_y});
                     m_pixels.push_back(pixel);
                 }
             }
@@ -51,9 +51,10 @@ namespace PONG {
                     if (m_event.key.code == sf::Keyboard::A) return Event(EventType::KEY_PRESSED, KEY::A);
                     if (m_event.key.code == sf::Keyboard::Q) return Event(EventType::KEY_PRESSED, KEY::Q);
                     if (m_event.key.code == sf::Keyboard::Escape) return Event(EventType::KEY_PRESSED, KEY::ESC);
-                    return Event(EventType::KEY_PRESSED, KEY::UNKNOWN);
+                    return Event(EventType::KEY_PRESSED, KEY::UNKNOWN_KEY);
                 }
-                return Event(EventType::UNKNOWN, KEY::UNKNOWN);
+                if (m_event.type == sf::Event::Closed) return Event(EventType::QUIT, KEY::UNKNOWN_KEY);
+                return Event(EventType::UNKNOWN_EVENT, KEY::UNKNOWN_KEY);
             }
             void closeWindow() {
                 m_window->close();
