@@ -6,13 +6,9 @@
 */
 
 #include "Core/Core.hpp"
-#include <string>
 
-int main(int argc, const char **argv)
+int main(int ac, const char **argv)
 {
-    if (argc != 2)
-        return 84;
-    PONG::Core game((std::string)argv[1]);
-    game.run();
-    return 0;
+    PONG::Core pong;
+    pong.run();
 }

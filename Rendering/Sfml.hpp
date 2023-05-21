@@ -46,8 +46,8 @@ namespace PONG {
             }
             Event getEvent() {
                 if (m_event.type == sf::Event::KeyPressed) {
-                    if (m_event.key.code == sf::Keyboard::Up) return Event(EventType::KEY_PRESSED, KEY::UP);
-                    if (m_event.key.code == sf::Keyboard::Down) return Event(EventType::KEY_PRESSED, KEY::UP);
+                    if (m_event.key.code == sf::Keyboard::Up) return Event(EventType::KEY_PRESSED, KEY::Up);
+                    if (m_event.key.code == sf::Keyboard::Down) return Event(EventType::KEY_PRESSED, KEY::Down);
                     if (m_event.key.code == sf::Keyboard::A) return Event(EventType::KEY_PRESSED, KEY::A);
                     if (m_event.key.code == sf::Keyboard::Q) return Event(EventType::KEY_PRESSED, KEY::Q);
                     if (m_event.key.code == sf::Keyboard::Escape) return Event(EventType::KEY_PRESSED, KEY::ESC);

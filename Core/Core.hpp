@@ -13,50 +13,19 @@
     #include <memory>
     #include <vector>
     #include <unordered_map>
-
+    #include "../Utils/Utils.hpp"
 namespace PONG {
-    enum MODE {
-        COMPUTER,
-        VERSUS
-    };
-    static const std::vector<std::string> basicMap = {
-            "1111111111111111111111111111111111111111",
-            "00000000000000000000000000000000000000000",
-            "1010000000000000000000000000000000000001",
-            "1000000000000000000000000000000000000001",
-            "1000000000000000000000000000000000000001",
-            "1000000000000000000000000000000000000001",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "0000000000000000000000000000000000000000",
-            "1111111111111111111111111111111111111111"
-        };
     class Core {
         public:
-            explicit Core(std::string arg) {
-                gameMode = (arg == "AI") ? COMPUTER : VERSUS;
+            Core() {
                 m_renderer = std::make_shared<Sfml>();
-             //   m_game = std::make_shared<Game>(MODE);
+                Pos p1Head(0, 40);
+                Pos p1Tail(0, 100);
+
+                Pos p2Head(780, 40);
+                Pos p2Tail(780, 100);
+
+                m_game = std::make_shared<Pong>(20, p1Head, p1Tail, p2Head, p2Tail, 580);
             }
             void run() {
                 std::unordered_map<Pos, Color, PosHash> pixels;
@@ -74,9 +43,57 @@ namespace PONG {
                     m_renderer->SetPixels(pixels);
                     while (m_renderer->windowOpened()) {
                         while (m_renderer->pollEvent()) {
-                            if (m_renderer->getEvent().m_EvtType == PONG::EventType::QUIT) {
+                            PONG::Event evt = m_renderer->getEvent();
+                            if (evt.m_EvtType == PONG::EventType::QUIT) {
                                 m_renderer->closeWindow();
                                 break;
+                            }
+                            if (evt.m_EvtType == PONG::EventType::KEY_PRESSED) {
+                                KEY key = evt.m_KeyCode;
+                                if (key == Up) {
+                                    Pos toPop(0, 0);
+                                    Pos toPush(0, 0);
+                                    bool move = false;
+                                    m_game->movePlayer(PLAYER::P1, DIRECTION::UP, toPop, toPush, move);
+                                    if (move) {
+                                        pixels[toPop] = BLACK;
+                                        pixels[toPush] = WHITE;
+                                        m_renderer->SetPixels(pixels);
+                                    }
+                                }
+                                if (key == Down) {
+                                    Pos toPop(0, 0);
+                                    Pos toPush(0, 0);
+                                    bool move = false;
+                                    m_game->movePlayer(PLAYER::P1, DIRECTION::DOWN, toPop, toPush, move);
+                                    if (move) {
+                                        pixels[toPop] = BLACK;
+                                        pixels[toPush] = WHITE;
+                                        m_renderer->SetPixels(pixels);
+                                    }
+                                }
+                                if (key == A) {
+                                    Pos toPop(0, 0);
+                                    Pos toPush(0, 0);
+                                    bool move = false;
+                                    m_game->movePlayer(PLAYER::P2, DIRECTION::UP, toPop, toPush, move);
+                                    if (move) {
+                                        pixels[toPop] = BLACK;
+                                        pixels[toPush] = WHITE;
+                                        m_renderer->SetPixels(pixels);
+                                    }
+                                }
+                                if (key == Q) {
+                                    Pos toPop(0, 0);
+                                    Pos toPush(0, 0);
+                                    bool move = false;
+                                    m_game->movePlayer(PLAYER::P2, DIRECTION::DOWN, toPop, toPush, move);
+                                    if (move) {
+                                        pixels[toPop] = BLACK;
+                                        pixels[toPush] = WHITE;
+                                        m_renderer->SetPixels(pixels);
+                                    }
+                                }
                             }
                         }
                         m_renderer->Render();
@@ -86,9 +103,8 @@ namespace PONG {
             ~Core() = default;
         protected:
         private:
-        MODE gameMode;
         std::shared_ptr<Renderer> m_renderer;
-        std::shared_ptr<Game> m_pong;
+        std::shared_ptr<Pong> m_game;
     };
 }
 
